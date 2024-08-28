@@ -1,16 +1,14 @@
 [
   {
-    "modid": "${modid}",
-    "name": "Xample Mod",
-    "description": "A mod that is used as an example.",
-    "version": "${version}",
-    "mcversion": "${mcversion}",
-    "url": "https://github.com/romangraef/Forge1.8.9Template/",
+    "modid": "fairygrottofinder",
+    "name": "Fairy Grotto Finder",
+    "description": "A mod that helps locate the Fairy Grotto in the Crystal Hollows and counts Jasper blocks.",
+    "version": "1.0",
+    "mcversion": "1.8.9",
+    "url": "",
     "updateUrl": "",
-    "authorList": [
-      "You"
-    ],
-    "credits": "",
+    "authorList": ["Yilmaz"],
+    "credits": "Thanks to the Minecraft Forge community.",
     "logoFile": "",
     "screenshots": [],
     "dependencies": []
