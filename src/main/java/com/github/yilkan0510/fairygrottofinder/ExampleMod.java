@@ -1,5 +1,7 @@
 package com.github.yilkan0510.fairygrottofinder;
 
+import com.github.yilkan0510.fairygrottofinder.config.GrottoRadiusConfig;
+import com.github.yilkan0510.fairygrottofinder.gui.GuiGrottoRadius;
 import com.github.yilkan0510.fairygrottofinder.init.CommandFindGrotto;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -7,6 +9,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -21,35 +24,45 @@ public class ExampleMod {
 
     private static final String KEY_CATEGORY = "Fairy Grotto Finder";
     private static KeyBinding toggleGrottoKey;
+    private static KeyBinding openGrottoGuiKey;
+
+    private CommandFindGrotto commandFindGrotto;
 
     public ExampleMod() {
-        // Initialize the key binding
         toggleGrottoKey = new KeyBinding("key.togglegrotto", Keyboard.KEY_G, KEY_CATEGORY);
+        openGrottoGuiKey = new KeyBinding("key.opengrottogui", Keyboard.KEY_R, KEY_CATEGORY);
         ClientRegistry.registerKeyBinding(toggleGrottoKey);
+        ClientRegistry.registerKeyBinding(openGrottoGuiKey);
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandFindGrotto());
+        commandFindGrotto = new CommandFindGrotto();
+        event.registerServerCommand(commandFindGrotto);
     }
 
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
-        if (toggleGrottoKey.isPressed()) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.thePlayer.addChatMessage(new ChatComponentText("Grotto Finder Key Pressed!"));
+        Minecraft mc = Minecraft.getMinecraft();
 
-            // Create an instance of CommandFindGrotto
-            CommandFindGrotto commandFindGrotto = new CommandFindGrotto();
-
-            // Call the processCommand method with the player as the sender
-            commandFindGrotto.processCommand(mc.thePlayer, new String[]{});
+        if (mc.thePlayer == null) {
+            return;
         }
-    }
 
-    @Mod.EventHandler
-    public void init() {
-        // Register event handler for client-side events
-        MinecraftForge.EVENT_BUS.register(this);
+        if (toggleGrottoKey.isPressed()) {
+            mc.thePlayer.addChatMessage(new ChatComponentText("Grotto Finder Key Pressed!"));
+            if (commandFindGrotto != null) {
+                commandFindGrotto.findGrotto(mc.thePlayer, GrottoRadiusConfig.radius);
+            }
+        }
+
+        if (openGrottoGuiKey.isPressed()) {
+            mc.displayGuiScreen(new GuiGrottoRadius());
+        }
     }
 }

@@ -1,21 +1,21 @@
 package com.github.yilkan0510.fairygrottofinder.init;
 
+import com.github.yilkan0510.fairygrottofinder.config.GrottoRadiusConfig;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPane;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 public class CommandFindGrotto extends CommandBase {
 
-    // Minecraft blocks representing Jasper in the Fairy Grotto
-    private static final Block JASPER_BLOCK = Blocks.stained_glass; // Pink stained glass
-    private static final Block JASPER_PANE = Blocks.stained_glass_pane; // Pink stained glass pane
-    private static final int PINK_COLOR_METADATA = 6; // Metadata for pink color in stained glass
+    private static final Block JASPER_BLOCK = Blocks.stained_glass;
+    private static final Block JASPER_PANE = Blocks.stained_glass_pane;
+    private static final int PINK_COLOR_METADATA = 6;
 
     @Override
     public String getCommandName() {
@@ -29,10 +29,13 @@ public class CommandFindGrotto extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
+        findGrotto(sender, GrottoRadiusConfig.radius);
+    }
+
+    public void findGrotto(ICommandSender sender, int radius) {
         World world = sender.getEntityWorld();
         BlockPos playerPos = sender.getPosition();
 
-        int radius = 100; // Search radius
         BlockPos grottoLocation = null;
         int jasperCount = 0;
 
@@ -46,8 +49,6 @@ public class CommandFindGrotto extends CommandBase {
                         if (grottoLocation == null) {
                             grottoLocation = checkPos;
                         }
-
-                        // Count Jasper blocks (stained glass or panes)
                         jasperCount++;
                     }
                 }
@@ -55,10 +56,14 @@ public class CommandFindGrotto extends CommandBase {
         }
 
         if (grottoLocation != null) {
-            sender.addChatMessage(new ChatComponentText("Fairy Grotto found at: " + grottoLocation));
-            sender.addChatMessage(new ChatComponentText("Jasper Blocks/Panes found: " + jasperCount));
+            String message = EnumChatFormatting.GREEN + "Fairy Grotto found at: " +
+                    EnumChatFormatting.YELLOW + "[" + grottoLocation.getX() + ", " + grottoLocation.getY() + ", " + grottoLocation.getZ() + "]\n" +
+                    EnumChatFormatting.GREEN + "Jasper Blocks/Panes found: " +
+                    EnumChatFormatting.AQUA + jasperCount;
+            sender.addChatMessage(new ChatComponentText(message));
         } else {
-            sender.addChatMessage(new ChatComponentText("No Fairy Grotto found within range."));
+            String message = EnumChatFormatting.RED + "No Fairy Grotto found within range.";
+            sender.addChatMessage(new ChatComponentText(message));
         }
     }
 
