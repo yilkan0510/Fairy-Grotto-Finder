@@ -1,4 +1,4 @@
-package com.github.yilkan0510.fairygrottofinder.mixin;
+package com.github.yilkan0510.fairygrottofinder;
 
 import net.minecraft.client.gui.GuiMainMenu;
 import org.spongepowered.asm.mixin.Mixin;
